@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nerve Block Advisor | Interventional Radiology Pain Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0f14;
+            --bg-secondary: #121a22;
+            --bg-tertiary: #1a252f;
+            --bg-card: #151e28;
+            --accent-teal: #2dd4bf;
+            --accent-teal-dim: #134e4a;
+            --accent-blue: #38bdf8;
+            --accent-amber: #fbbf24;
+            --accent-rose: #fb7185;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border-subtle: rgba(255,255,255,0.06);
+            --border-accent: rgba(45,212,191,0.3);
+            --shadow-glow: 0 0 60px rgba(45,212,191,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 3rem 0 2rem;
+            border-bottom: 1px solid var(--border-subtle);
+            margin-bottom: 2rem;
+        }
+
+        .header-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--bg-tertiary);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent-teal);
+            margin-bottom: 1.5rem;
+        }
+
+        .header-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--accent-teal);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .header h1 {
+            font-family: 'Instrument Serif', serif;
+            font-size: 2.5rem;
+            font-weight: 400;
+            margin-bottom: 0.75rem;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-teal) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: var(--bg-tertiary);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-teal), var(--accent-blue));
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 2rem;
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Question Panel */
+        .question-panel {
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border-subtle);
+            padding: 2rem;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .question-number {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--accent-teal-dim);
+            color: var(--accent-teal);
+            border-radius: 50%;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .question-category {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+        }
+
+        .question-text {
+            font-family: 'Instrument Serif', serif;
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .question-hint {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            padding-left: 1rem;
+            border-left: 2px solid var(--border-accent);
+        }
+
+        /* Options */
+        .options-grid {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .option-btn {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+
+        .option-btn:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--border-accent);
+            transform: translateX(4px);
+        }
+
+        .option-btn.selected {
+            background: var(--accent-teal-dim);
+            border-color: var(--accent-teal);
+        }
+
+        .option-radio {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--text-muted);
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2px;
+            transition: all 0.2s ease;
+        }
+
+        .option-btn.selected .option-radio {
+            border-color: var(--accent-teal);
+            background: var(--accent-teal);
+        }
+
+        .option-btn.selected .option-radio::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--bg-primary);
+            border-radius: 50%;
+        }
+
+        .option-content h4 {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+            color: var(--text-primary);
+        }
+
+        .option-content p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Multi-select checkbox style */
+        .option-btn.multi .option-radio {
+            border-radius: 4px;
+        }
+
+        .option-btn.multi.selected .option-radio::after {
+            content: '✓';
+            width: auto;
+            height: auto;
+            background: none;
+            border-radius: 0;
+            font-size: 12px;
+            color: var(--bg-primary);
+            font-weight: bold;
+        }
+
+        /* Navigation */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            font-family: inherit;
+        }
+
+        .nav-btn.secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+        }
+
+        .nav-btn.secondary:hover {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .nav-btn.primary {
+            background: linear-gradient(135deg, var(--accent-teal), #22c5ad);
+            color: var(--bg-primary);
+        }
+
+        .nav-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(45,212,191,0.3);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Summary Panel */
+        .summary-panel {
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border-subtle);
+            padding: 1.5rem;
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+        }
+
+        .summary-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .summary-item {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        .summary-value {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .summary-value.empty {
+            color: var(--text-muted);
+            font-style: italic;
+            font-weight: 400;
+        }
+
+        /* Results Panel */
+        .results-panel {
+            grid-column: 1 / -1;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .results-header h2 {
+            font-family: 'Instrument Serif', serif;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .result-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border-subtle);
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .result-card.primary {
+            border-color: var(--accent-teal);
+            box-shadow: 0 0 40px rgba(45,212,191,0.15);
+        }
+
+        .result-card.alternative {
+            opacity: 0.85;
+        }
+
+        .result-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+        }
+
+        .result-badge.recommended {
+            background: var(--accent-teal-dim);
+            color: var(--accent-teal);
+        }
+
+        .result-badge.alternative {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+        }
+
+        .result-card h3 {
+            font-family: 'Instrument Serif', serif;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-card .match-score {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .match-bar {
+            flex: 1;
+            height: 6px;
+            background: var(--bg-tertiary);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .match-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-teal), var(--accent-blue));
+            border-radius: 3px;
+        }
+
+        .match-percent {
+            font-size: 0.875rem;
+            color: var(--accent-teal);
+            font-weight: 600;
+        }
+
+        .result-section {
+            margin-bottom: 1rem;
+        }
+
+        .result-section-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .result-section p, .result-section ul {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .result-section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .result-section li {
+            padding: 0.25rem 0;
+            padding-left: 1.25rem;
+            position: relative;
+        }
+
+        .result-section li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--accent-teal);
+        }
+
+        .result-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .result-tag {
+            padding: 0.25rem 0.75rem;
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .result-tag.warning {
+            background: rgba(251,191,36,0.15);
+            color: var(--accent-amber);
+        }
+
+        .result-tag.palliative {
+            background: rgba(251,113,133,0.15);
+            color: var(--accent-rose);
+        }
+
+        /* Reset button */
+        .reset-section {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .reset-btn {
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+
+        .reset-btn:hover {
+            border-color: var(--text-muted);
+            color: var(--text-primary);
+        }
+
+        /* Intro screen */
+        .intro-panel {
+            grid-column: 1 / -1;
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border-subtle);
+            padding: 3rem;
+            text-align: center;
+        }
+
+        .intro-panel h2 {
+            font-family: 'Instrument Serif', serif;
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .intro-panel p {
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .intro-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .intro-feature {
+            padding: 1.25rem;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+        }
+
+        .intro-feature-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--accent-teal-dim);
+            color: var(--accent-teal);
+            border-radius: 10px;
+            margin-bottom: 0.75rem;
+            font-size: 1.25rem;
+        }
+
+        .intro-feature h4 {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .intro-feature p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        .start-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, var(--accent-teal), #22c5ad);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(45,212,191,0.3);
+        }
+
+        /* Disclaimer */
+        .disclaimer {
+            margin-top: 3rem;
+            padding: 1.5rem;
+            background: rgba(251,191,36,0.08);
+            border: 1px solid rgba(251,191,36,0.2);
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .disclaimer strong {
+            color: var(--accent-amber);
+        }
+
+        /* Hidden */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease forwards;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="header">
+            <div class="header-badge">Interventional Radiology</div>
+            <h1>Nerve Block Advisor</h1>
+            <p>Clinical decision support for abdominal and pelvic nerve blocks in pain management, with special consideration for palliative care patients</p>
+        </header>
+
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-label">
+                <span id="progressText">Question 0 of 8</span>
+                <span id="progressPercent">0%</span>
+            </div>
+        </div>
+
+        <main class="main-content" id="mainContent">
+            <!-- Intro Panel -->
+            <div class="intro-panel" id="introPanel">
+                <h2>Welcome to the Nerve Block Advisor</h2>
+                <p>This tool helps referring physicians identify appropriate nerve block procedures for patients with abdominal and pelvic pain, including those in palliative care.</p>
+                
+                <div class="intro-features">
+                    <div class="intro-feature">
+                        <div class="intro-feature-icon">📍</div>
+                        <h4>Pain Localization</h4>
+                        <p>Identify optimal targets based on pain distribution</p>
+                    </div>
+                    <div class="intro-feature">
+                        <div class="intro-feature-icon">🩺</div>
+                        <h4>Clinical Context</h4>
+                        <p>Consider etiology, prior treatments, and patient factors</p>
+                    </div>
+                    <div class="intro-feature">
+                        <div class="intro-feature-icon">💊</div>
+                        <h4>Palliative Focus</h4>
+                        <p>Special protocols for end-stage malignancy patients</p>
+                    </div>
+                    <div class="intro-feature">
+                        <div class="intro-feature-icon">📋</div>
+                        <h4>Recommendations</h4>
+                        <p>Evidence-based procedure suggestions with rationale</p>
+                    </div>
+                </div>
+
+                <button class="start-btn" onclick="startAssessment()">
+                    Begin Clinical Assessment
+                    <span>→</span>
+                </button>
+
+                <div class="disclaimer">
+                    <strong>Clinical Disclaimer:</strong> This tool provides educational guidance only and does not replace clinical judgment. All recommendations should be reviewed by the interventional radiologist and tailored to individual patient circumstances. Procedure selection depends on imaging findings, patient anatomy, and clinical status not captured here.
+                </div>
+            </div>
+
+            <!-- Question Panel -->
+            <div class="question-panel hidden" id="questionPanel">
+                <div class="question-header">
+                    <div class="question-number" id="questionNumber">1</div>
+                    <div class="question-category" id="questionCategory">Pain Characteristics</div>
+                </div>
+                <h3 class="question-text" id="questionText">Loading question...</h3>
+                <p class="question-hint" id="questionHint"></p>
+                <div class="options-grid" id="optionsGrid"></div>
+                <div class="nav-buttons">
+                    <button class="nav-btn secondary" id="prevBtn" onclick="previousQuestion()">
+                        ← Back
+                    </button>
+                    <button class="nav-btn primary" id="nextBtn" onclick="nextQuestion()">
+                        Continue →
+                    </button>
+                </div>
+            </div>
+
+            <!-- Summary Panel -->
+            <div class="summary-panel hidden" id="summaryPanel">
+                <div class="summary-title">Assessment Summary</div>
+                <div id="summaryContent"></div>
+            </div>
+
+            <!-- Results Panel -->
+            <div class="results-panel hidden" id="resultsPanel">
+                <div class="results-header">
+                    <h2>Recommended Nerve Blocks</h2>
+                    <p style="color: var(--text-secondary);">Based on the clinical information provided</p>
+                </div>
+                <div class="results-grid" id="resultsGrid"></div>
+                <div class="reset-section">
+                    <button class="reset-btn" onclick="resetAssessment()">Start New Assessment</button>
+                </div>
+                <div class="disclaimer">
+                    <strong>Important:</strong> These recommendations are for educational purposes. Final procedure selection requires review of imaging, laboratory values, anticoagulation status, and direct patient evaluation. Please contact the IR pain management service to discuss individual cases.
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Questions database
+        const questions = [
+            {
+                id: 'painLocation',
+                category: 'Pain Localization',
+                text: 'What is the primary location of the patient\'s pain?',
+                hint: 'Select the anatomical region where pain is most severe or predominant',
+                type: 'single',
+                options: [
+                    { value: 'epigastric', label: 'Epigastric / Upper Abdominal', desc: 'Upper central abdomen, may radiate to back' },
+                    { value: 'right_upper', label: 'Right Upper Quadrant', desc: 'Liver, gallbladder, right kidney region' },
+                    { value: 'left_upper', label: 'Left Upper Quadrant', desc: 'Spleen, left kidney, tail of pancreas region' },
+                    { value: 'periumbilical', label: 'Periumbilical / Mid-Abdominal', desc: 'Central abdominal pain around umbilicus' },
+                    { value: 'lower_abdominal', label: 'Lower Abdominal', desc: 'Below umbilicus, suprapubic region' },
+                    { value: 'pelvic', label: 'Pelvic / Perineal', desc: 'Deep pelvis, perineum, or genital region' },
+                    { value: 'flank', label: 'Flank / Retroperitoneal', desc: 'Lateral abdominal wall, kidney region' },
+                    { value: 'diffuse', label: 'Diffuse / Multifocal', desc: 'Widespread abdominal or pelvic pain' }
+                ]
+            },
+            {
+                id: 'painRadiation',
+                category: 'Pain Characteristics',
+                text: 'Does the pain radiate to any specific location?',
+                hint: 'Pain radiation patterns help identify the involved neural pathways',
+                type: 'multi',
+                options: [
+                    { value: 'back', label: 'Back (Midline)', desc: 'Common in pancreatic and retroperitoneal pathology' },
+                    { value: 'shoulder', label: 'Shoulder (Referred)', desc: 'Suggests diaphragmatic or hepatic involvement' },
+                    { value: 'groin', label: 'Groin / Inguinal', desc: 'Ureteral, ovarian, or inguinal nerve territory' },
+                    { value: 'thigh', label: 'Thigh / Lower Extremity', desc: 'May indicate lumbosacral plexus involvement' },
+                    { value: 'perineum', label: 'Perineum / Sacral', desc: 'Sacral nerve involvement, pelvic floor' },
+                    { value: 'none', label: 'No Radiation', desc: 'Pain is localized without radiating component' }
+                ]
+            },
+            {
+                id: 'painCharacter',
+                category: 'Pain Characteristics',
+                text: 'What is the predominant character of the pain?',
+                hint: 'Visceral vs somatic pain characteristics guide block selection',
+                type: 'single',
+                options: [
+                    { value: 'visceral', label: 'Visceral / Deep Aching', desc: 'Dull, poorly localized, cramping, gnawing quality' },
+                    { value: 'somatic', label: 'Somatic / Sharp', desc: 'Well-localized, sharp, worse with movement' },
+                    { value: 'neuropathic', label: 'Neuropathic / Burning', desc: 'Burning, shooting, electric, tingling sensations' },
+                    { value: 'mixed', label: 'Mixed Character', desc: 'Combination of visceral, somatic, and/or neuropathic' }
+                ]
+            },
+            {
+                id: 'etiology',
+                category: 'Clinical Context',
+                text: 'What is the underlying etiology of the pain?',
+                hint: 'The cause of pain influences expected response to specific blocks',
+                type: 'single',
+                options: [
+                    { value: 'pancreatic_cancer', label: 'Pancreatic Malignancy', desc: 'Pancreatic adenocarcinoma or neuroendocrine tumor' },
+                    { value: 'gi_cancer', label: 'Other GI Malignancy', desc: 'Gastric, hepatobiliary, colorectal cancer' },
+                    { value: 'gyn_cancer', label: 'Gynecologic Malignancy', desc: 'Ovarian, uterine, cervical, or vaginal cancer' },
+                    { value: 'gu_cancer', label: 'Genitourinary Malignancy', desc: 'Prostate, bladder, kidney, or testicular cancer' },
+                    { value: 'peritoneal', label: 'Peritoneal Carcinomatosis', desc: 'Widespread peritoneal metastases' },
+                    { value: 'chronic_pancreatitis', label: 'Chronic Pancreatitis', desc: 'Non-malignant pancreatic inflammation' },
+                    { value: 'mesenteric_ischemia', label: 'Mesenteric Ischemia', desc: 'Chronic mesenteric vascular insufficiency' },
+                    { value: 'other', label: 'Other / Non-Malignant', desc: 'Other chronic pain syndromes' }
+                ]
+            },
+            {
+                id: 'priorTreatments',
+                category: 'Treatment History',
+                text: 'What pain management approaches have been tried?',
+                hint: 'Select all treatments attempted with inadequate relief',
+                type: 'multi',
+                options: [
+                    { value: 'oral_opioids', label: 'Oral Opioids', desc: 'Morphine, oxycodone, hydromorphone, etc.' },
+                    { value: 'iv_pca', label: 'IV/PCA Opioids', desc: 'Intravenous or patient-controlled analgesia' },
+                    { value: 'nsaids', label: 'NSAIDs / Acetaminophen', desc: 'Non-opioid analgesics' },
+                    { value: 'adjuvants', label: 'Adjuvant Medications', desc: 'Gabapentin, pregabalin, duloxetine, TCAs' },
+                    { value: 'epidural', label: 'Epidural Analgesia', desc: 'Thoracic or lumbar epidural catheter' },
+                    { value: 'prior_block', label: 'Prior Nerve Block', desc: 'Previous diagnostic or therapeutic block' },
+                    { value: 'radiation', label: 'Palliative Radiation', desc: 'Radiation therapy for pain control' },
+                    { value: 'none', label: 'Limited Prior Treatment', desc: 'Minimal prior analgesic therapy' }
+                ]
+            },
+            {
+                id: 'patientStatus',
+                category: 'Patient Factors',
+                text: 'What is the patient\'s current clinical status?',
+                hint: 'Performance status and prognosis influence procedure planning',
+                type: 'single',
+                options: [
+                    { value: 'good_performance', label: 'Good Performance Status', desc: 'ECOG 0-1, ambulatory, self-care capable' },
+                    { value: 'moderate_debility', label: 'Moderate Debility', desc: 'ECOG 2, ambulatory >50% of day, limited self-care' },
+                    { value: 'poor_performance', label: 'Poor Performance Status', desc: 'ECOG 3-4, limited mobility, bed/chair bound' },
+                    { value: 'hospice', label: 'Hospice / End of Life', desc: 'Comfort-focused care, limited life expectancy' }
+                ]
+            },
+            {
+                id: 'procedureGoal',
+                category: 'Treatment Goals',
+                text: 'What is the primary goal for this intervention?',
+                hint: 'Goals guide whether to pursue diagnostic blocks first or proceed to neurolysis',
+                type: 'single',
+                options: [
+                    { value: 'diagnostic', label: 'Diagnostic Block', desc: 'Confirm pain generator before definitive treatment' },
+                    { value: 'therapeutic', label: 'Therapeutic Block', desc: 'Short to medium-term pain relief with local anesthetic ± steroid' },
+                    { value: 'neurolytic', label: 'Neurolytic Block', desc: 'Long-term ablation with alcohol or phenol for palliative patients' },
+                    { value: 'reduce_opioids', label: 'Opioid Reduction', desc: 'Primary goal is to reduce opioid requirements and side effects' }
+                ]
+            },
+            {
+                id: 'contraindications',
+                category: 'Safety Assessment',
+                text: 'Are any of the following contraindications present?',
+                hint: 'Select all that apply - these may influence procedure approach or timing',
+                type: 'multi',
+                options: [
+                    { value: 'coagulopathy', label: 'Coagulopathy / Anticoagulation', desc: 'INR >1.5, platelets <50k, therapeutic anticoagulation' },
+                    { value: 'infection', label: 'Active Infection / Sepsis', desc: 'Systemic infection or local skin infection at site' },
+                    { value: 'bowel_obstruction', label: 'Bowel Obstruction', desc: 'Current intestinal obstruction' },
+                    { value: 'ascites', label: 'Significant Ascites', desc: 'Moderate to large volume ascites' },
+                    { value: 'tumor_encasement', label: 'Vascular Encasement', desc: 'Tumor encasing celiac axis or major vessels' },
+                    { value: 'none', label: 'No Contraindications', desc: 'None of the above present' }
+                ]
+            }
+        ];
+
+        // Nerve block database with clinical details
+        const nerveBlocks = {
+            celiac_plexus: {
+                name: 'Celiac Plexus Block / Neurolysis',
+                description: 'Targets the celiac plexus at the T12-L1 level, interrupting sympathetic and visceral afferent fibers from upper abdominal organs.',
+                indications: ['Pancreatic cancer pain', 'Upper abdominal visceral pain', 'Chronic pancreatitis', 'Gastric/hepatobiliary malignancy'],
+                approach: 'CT-guided posterior or anterior approach with local anesthetic ± alcohol/phenol for neurolysis',
+                considerations: ['Risk of orthostatic hypotension', 'Diarrhea common post-procedure', 'Excellent for visceral pain, less effective for somatic invasion'],
+                palliative: true,
+                efficacy: '70-90% of pancreatic cancer patients report significant relief'
+            },
+            splanchnic: {
+                name: 'Splanchnic Nerve Block',
+                description: 'Targets the greater, lesser, and least splanchnic nerves at T10-T12 paravertebral level, proximal to the celiac plexus.',
+                indications: ['Alternative when celiac plexus obscured by tumor', 'Upper abdominal cancer pain', 'Prior failed celiac plexus block'],
+                approach: 'CT-guided posterior approach at thoracic paravertebral level',
+                considerations: ['May be preferred when celiac axis is encased', 'Lower risk of hypotension than celiac block', 'Can be done bilaterally'],
+                palliative: true,
+                efficacy: 'Similar efficacy to celiac plexus block in experienced hands'
+            },
+            superior_hypogastric: {
+                name: 'Superior Hypogastric Plexus Block',
+                description: 'Targets the superior hypogastric plexus at L5-S1 level, interrupting sympathetic fibers to pelvic viscera.',
+                indications: ['Pelvic visceral pain', 'Gynecologic malignancy', 'Colorectal cancer', 'Bladder/prostate cancer', 'Endometriosis'],
+                approach: 'CT or fluoroscopic-guided anterior or posterior approach at L5-S1',
+                considerations: ['Preserves somatic sensation', 'May cause urinary/sexual dysfunction (reversible with LA)', 'Bilateral block typically needed'],
+                palliative: true,
+                efficacy: '70-80% response rate for pelvic cancer pain'
+            },
+            ganglion_impar: {
+                name: 'Ganglion Impar Block',
+                description: 'Targets the ganglion impar (ganglion of Walther) at the sacrococcygeal junction, the terminal sympathetic ganglion.',
+                indications: ['Perineal pain', 'Rectal/anal cancer', 'Coccydynia', 'Vulvar/vaginal cancer', 'Sacral pain from malignancy'],
+                approach: 'CT or fluoroscopic-guided trans-sacrococcygeal or lateral approach',
+                considerations: ['Relatively safe, single midline structure', 'Excellent for perineal/rectal pain', 'Can be combined with superior hypogastric block'],
+                palliative: true,
+                efficacy: '60-80% of patients with perineal cancer pain report relief'
+            },
+            lumbar_sympathetic: {
+                name: 'Lumbar Sympathetic Block',
+                description: 'Targets the lumbar sympathetic chain at L2-L4 level, affecting sympathetic supply to lower extremities and some pelvic structures.',
+                indications: ['Lower extremity ischemic pain', 'Complex regional pain syndrome', 'Phantom limb pain', 'Hyperhidrosis', 'Some pelvic/groin pain'],
+                approach: 'CT or fluoroscopic-guided posterolateral approach at L2-L3',
+                considerations: ['Unilateral block may be sufficient', 'Risk of genitofemoral neuralgia', 'Monitor for warm limb as success indicator'],
+                palliative: false,
+                efficacy: 'Variable depending on indication, 60-80% for ischemic pain'
+            },
+            tap_block: {
+                name: 'Transversus Abdominis Plane (TAP) Block',
+                description: 'Targets the sensory nerves in the transversus abdominis plane, providing somatic abdominal wall analgesia.',
+                indications: ['Abdominal wall pain', 'Post-surgical pain', 'Somatic component of abdominal pain', 'Abdominal wall tumor invasion'],
+                approach: 'Ultrasound-guided injection between internal oblique and transversus abdominis muscles',
+                considerations: ['Does not address visceral pain', 'Temporary effect, may need catheter', 'Can be done bilaterally'],
+                palliative: false,
+                efficacy: 'Effective for somatic wall pain, limited duration'
+            },
+            paravertebral: {
+                name: 'Thoracic Paravertebral Block',
+                description: 'Targets thoracic spinal nerves in the paravertebral space, providing unilateral somatic and sympathetic blockade.',
+                indications: ['Unilateral thoracic/abdominal wall pain', 'Rib metastases', 'Post-thoracotomy pain', 'Herpes zoster'],
+                approach: 'Ultrasound or CT-guided injection into thoracic paravertebral space',
+                considerations: ['Unilateral effect', 'Risk of pneumothorax', 'Can place catheter for continuous infusion'],
+                palliative: true,
+                efficacy: 'Good for unilateral somatic pain, 70% response rate'
+            },
+            ilioinguinal: {
+                name: 'Ilioinguinal / Iliohypogastric Block',
+                description: 'Targets the ilioinguinal and iliohypogastric nerves, providing analgesia to groin and lower abdominal wall.',
+                indications: ['Chronic groin pain', 'Post-herniorrhaphy pain', 'Orchialgia', 'Lower abdominal wall pain'],
+                approach: 'Ultrasound-guided injection medial to ASIS',
+                considerations: ['Somatic nerves only', 'May need multiple level blocks', 'Consider genitofemoral nerve involvement'],
+                palliative: false,
+                efficacy: '60-70% for post-surgical inguinal pain'
+            },
+            pudendal: {
+                name: 'Pudendal Nerve Block',
+                description: 'Targets the pudendal nerve, providing analgesia to the perineum, external genitalia, and anal region.',
+                indications: ['Pudendal neuralgia', 'Perineal pain', 'Proctalgia', 'Vulvodynia', 'Chronic pelvic pain'],
+                approach: 'CT, fluoroscopic, or ultrasound-guided transgluteal or transperineal approach',
+                considerations: ['Complex anatomy, imaging guidance essential', 'Somatic nerve block', 'May complement ganglion impar for complete perineal coverage'],
+                palliative: true,
+                efficacy: '60-70% for pudendal neuralgia'
+            },
+            hypogastric_nerve: {
+                name: 'Inferior Hypogastric / Pelvic Plexus Block',
+                description: 'Targets the inferior hypogastric plexus lateral to the rectum, affecting parasympathetic and sympathetic pelvic innervation.',
+                indications: ['Pelvic sidewall pain', 'Advanced gynecologic cancer', 'Rectal cancer with sidewall invasion'],
+                approach: 'CT-guided anterolateral approach',
+                considerations: ['Complex procedure', 'Risk of ureteral/vascular injury', 'Consider when superior hypogastric block insufficient'],
+                palliative: true,
+                efficacy: 'Limited data, used for refractory pelvic pain'
+            }
+        };
+
+        // State management
+        let currentQuestion = -1; // -1 = intro screen
+        let answers = {};
+
+        // Initialize app
+        function init() {
+            updateProgress();
+            renderSummary();
+        }
+
+        function startAssessment() {
+            currentQuestion = 0;
+            document.getElementById('introPanel').classList.add('hidden');
+            document.getElementById('questionPanel').classList.remove('hidden');
+            document.getElementById('summaryPanel').classList.remove('hidden');
+            renderQuestion();
+            updateProgress();
+        }
+
+        function renderQuestion() {
+            const q = questions[currentQuestion];
+            document.getElementById('questionNumber').textContent = currentQuestion + 1;
+            document.getElementById('questionCategory').textContent = q.category;
+            document.getElementById('questionText').textContent = q.text;
+            document.getElementById('questionHint').textContent = q.hint;
+
+            const optionsGrid = document.getElementById('optionsGrid');
+            optionsGrid.innerHTML = '';
+
+            q.options.forEach(opt => {
+                const isSelected = q.type === 'multi' 
+                    ? (answers[q.id] || []).includes(opt.value)
+                    : answers[q.id] === opt.value;
+
+                const btn = document.createElement('button');
+                btn.className = `option-btn ${q.type === 'multi' ? 'multi' : ''} ${isSelected ? 'selected' : ''}`;
+                btn.onclick = () => selectOption(q.id, opt.value, q.type);
+                btn.innerHTML = `
+                    <div class="option-radio"></div>
+                    <div class="option-content">
+                        <h4>${opt.label}</h4>
+                        <p>${opt.desc}</p>
+                    </div>
+                `;
+                optionsGrid.appendChild(btn);
+            });
+
+            // Update nav buttons
+            document.getElementById('prevBtn').disabled = currentQuestion === 0;
+            const isLastQuestion = currentQuestion === questions.length - 1;
+            document.getElementById('nextBtn').textContent = isLastQuestion ? 'View Recommendations →' : 'Continue →';
+        }
+
+        function selectOption(questionId, value, type) {
+            if (type === 'multi') {
+                if (!answers[questionId]) answers[questionId] = [];
+                const idx = answers[questionId].indexOf(value);
+                if (idx > -1) {
+                    answers[questionId].splice(idx, 1);
+                } else {
+                    // Handle 'none' option exclusivity
+                    if (value === 'none') {
+                        answers[questionId] = ['none'];
+                    } else {
+                        answers[questionId] = answers[questionId].filter(v => v !== 'none');
+                        answers[questionId].push(value);
+                    }
+                }
+            } else {
+                answers[questionId] = value;
+            }
+            renderQuestion();
+            renderSummary();
+        }
+
+        function nextQuestion() {
+            const q = questions[currentQuestion];
+            // Validate answer exists
+            if (!answers[q.id] || (Array.isArray(answers[q.id]) && answers[q.id].length === 0)) {
+                alert('Please select an answer before continuing.');
+                return;
+            }
+
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                renderQuestion();
+                updateProgress();
+            } else {
+                showResults();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                renderQuestion();
+                updateProgress();
+            }
+        }
+
+        function updateProgress() {
+            const total = questions.length;
+            const current = Math.max(0, currentQuestion + 1);
+            const percent = Math.round((current / total) * 100);
+            
+            document.getElementById('progressFill').style.width = `${percent}%`;
+            document.getElementById('progressText').textContent = `Question ${current} of ${total}`;
+            document.getElementById('progressPercent').textContent = `${percent}%`;
+        }
+
+        function renderSummary() {
+            const summaryContent = document.getElementById('summaryContent');
+            const summaryItems = [
+                { id: 'painLocation', label: 'Pain Location' },
+                { id: 'painCharacter', label: 'Pain Character' },
+                { id: 'etiology', label: 'Etiology' },
+                { id: 'patientStatus', label: 'Patient Status' },
+                { id: 'procedureGoal', label: 'Goal' }
+            ];
+
+            summaryContent.innerHTML = summaryItems.map(item => {
+                const q = questions.find(q => q.id === item.id);
+                let value = answers[item.id];
+                let displayValue = 'Not answered';
+
+                if (value) {
+                    if (Array.isArray(value)) {
+                        displayValue = value.map(v => {
+                            const opt = q.options.find(o => o.value === v);
+                            return opt ? opt.label : v;
+                        }).join(', ');
+                    } else {
+                        const opt = q.options.find(o => o.value === value);
+                        displayValue = opt ? opt.label : value;
+                    }
+                }
+
+                return `
+                    <div class="summary-item">
+                        <div class="summary-label">${item.label}</div>
+                        <div class="summary-value ${!value ? 'empty' : ''}">${displayValue}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function calculateRecommendations() {
+            const scores = {};
+            
+            // Initialize scores
+            Object.keys(nerveBlocks).forEach(key => {
+                scores[key] = { score: 0, reasons: [], warnings: [] };
+            });
+
+            // Pain location scoring
+            const location = answers.painLocation;
+            if (location === 'epigastric' || location === 'right_upper' || location === 'left_upper') {
+                scores.celiac_plexus.score += 30;
+                scores.celiac_plexus.reasons.push('Upper abdominal pain location');
+                scores.splanchnic.score += 25;
+                scores.splanchnic.reasons.push('Alternative for upper abdominal pain');
+            }
+            if (location === 'periumbilical') {
+                scores.celiac_plexus.score += 20;
+                scores.celiac_plexus.reasons.push('Mid-abdominal visceral pain');
+                scores.tap_block.score += 15;
+                scores.tap_block.reasons.push('May help with somatic wall component');
+            }
+            if (location === 'lower_abdominal') {
+                scores.superior_hypogastric.score += 25;
+                scores.superior_hypogastric.reasons.push('Lower abdominal/pelvic visceral pain');
+                scores.ilioinguinal.score += 15;
+                scores.ilioinguinal.reasons.push('Somatic lower abdominal wall coverage');
+            }
+            if (location === 'pelvic') {
+                scores.superior_hypogastric.score += 30;
+                scores.superior_hypogastric.reasons.push('Pelvic visceral pain location');
+                scores.ganglion_impar.score += 25;
+                scores.ganglion_impar.reasons.push('Perineal component coverage');
+                scores.pudendal.score += 20;
+                scores.pudendal.reasons.push('Somatic perineal innervation');
+            }
+            if (location === 'flank') {
+                scores.splanchnic.score += 20;
+                scores.splanchnic.reasons.push('Retroperitoneal pain coverage');
+                scores.paravertebral.score += 20;
+                scores.paravertebral.reasons.push('Unilateral somatic coverage');
+                scores.lumbar_sympathetic.score += 15;
+                scores.lumbar_sympathetic.reasons.push('Sympathetic component consideration');
+            }
+
+            // Pain radiation scoring
+            const radiation = answers.painRadiation || [];
+            if (radiation.includes('back')) {
+                scores.celiac_plexus.score += 15;
+                scores.celiac_plexus.reasons.push('Back radiation suggests retroperitoneal involvement');
+                scores.splanchnic.score += 15;
+                scores.splanchnic.reasons.push('Back radiation pattern');
+            }
+            if (radiation.includes('groin')) {
+                scores.superior_hypogastric.score += 10;
+                scores.ilioinguinal.score += 15;
+                scores.ilioinguinal.reasons.push('Groin radiation suggests inguinal nerve involvement');
+                scores.lumbar_sympathetic.score += 10;
+            }
+            if (radiation.includes('perineum')) {
+                scores.ganglion_impar.score += 20;
+                scores.ganglion_impar.reasons.push('Perineal radiation');
+                scores.pudendal.score += 15;
+                scores.pudendal.reasons.push('Perineal radiation pattern');
+            }
+            if (radiation.includes('thigh')) {
+                scores.lumbar_sympathetic.score += 15;
+                scores.lumbar_sympathetic.reasons.push('Lower extremity involvement');
+                scores.hypogastric_nerve.score += 10;
+            }
+
+            // Pain character scoring
+            const character = answers.painCharacter;
+            if (character === 'visceral') {
+                scores.celiac_plexus.score += 20;
+                scores.celiac_plexus.reasons.push('Visceral pain character - sympathetic block indicated');
+                scores.superior_hypogastric.score += 20;
+                scores.superior_hypogastric.reasons.push('Visceral pain character');
+                scores.splanchnic.score += 15;
+            }
+            if (character === 'somatic') {
+                scores.tap_block.score += 20;
+                scores.tap_block.reasons.push('Somatic pain character');
+                scores.paravertebral.score += 20;
+                scores.paravertebral.reasons.push('Somatic pain - consider nerve root level');
+                scores.ilioinguinal.score += 15;
+            }
+            if (character === 'neuropathic') {
+                scores.paravertebral.score += 15;
+                scores.pudendal.score += 15;
+                scores.pudendal.reasons.push('Neuropathic component');
+                // Add warning for all sympathetic blocks
+                Object.keys(scores).forEach(key => {
+                    if (['celiac_plexus', 'splanchnic', 'superior_hypogastric', 'ganglion_impar'].includes(key)) {
+                        scores[key].warnings.push('Neuropathic pain may respond less to sympathetic blocks alone');
+                    }
+                });
+            }
+
+            // Etiology scoring
+            const etiology = answers.etiology;
+            if (etiology === 'pancreatic_cancer') {
+                scores.celiac_plexus.score += 35;
+                scores.celiac_plexus.reasons.push('First-line for pancreatic cancer pain');
+                scores.splanchnic.score += 25;
+                scores.splanchnic.reasons.push('Alternative if celiac axis encased');
+            }
+            if (etiology === 'gi_cancer') {
+                scores.celiac_plexus.score += 25;
+                scores.celiac_plexus.reasons.push('GI malignancy coverage');
+            }
+            if (etiology === 'gyn_cancer') {
+                scores.superior_hypogastric.score += 30;
+                scores.superior_hypogastric.reasons.push('Gynecologic malignancy - pelvic visceral coverage');
+                scores.ganglion_impar.score += 15;
+                scores.hypogastric_nerve.score += 15;
+            }
+            if (etiology === 'gu_cancer') {
+                scores.superior_hypogastric.score += 25;
+                scores.superior_hypogastric.reasons.push('GU malignancy coverage');
+                scores.ganglion_impar.score += 15;
+            }
+            if (etiology === 'peritoneal') {
+                scores.celiac_plexus.score += 15;
+                scores.superior_hypogastric.score += 15;
+                scores.tap_block.score += 10;
+                scores.tap_block.warnings.push('Diffuse disease may limit response');
+            }
+            if (etiology === 'chronic_pancreatitis') {
+                scores.celiac_plexus.score += 30;
+                scores.celiac_plexus.reasons.push('Standard approach for chronic pancreatitis');
+                scores.splanchnic.score += 20;
+            }
+
+            // Patient status scoring
+            const status = answers.patientStatus;
+            if (status === 'hospice' || status === 'poor_performance') {
+                // Prefer simpler, well-established procedures
+                scores.celiac_plexus.score += 10;
+                scores.ganglion_impar.score += 10;
+                scores.ganglion_impar.reasons.push('Relatively straightforward procedure');
+                // Add warnings about more complex procedures
+                scores.hypogastric_nerve.warnings.push('Consider patient tolerance for complex procedure');
+            }
+
+            // Procedure goal scoring
+            const goal = answers.procedureGoal;
+            if (goal === 'neurolytic') {
+                // Boost palliative-appropriate blocks
+                Object.keys(nerveBlocks).forEach(key => {
+                    if (nerveBlocks[key].palliative) {
+                        scores[key].score += 10;
+                        scores[key].reasons.push('Suitable for neurolysis');
+                    } else {
+                        scores[key].score -= 10;
+                        scores[key].warnings.push('Typically not performed as neurolytic procedure');
+                    }
+                });
+            }
+            if (goal === 'diagnostic') {
+                // All blocks can be diagnostic
+                Object.keys(scores).forEach(key => {
+                    scores[key].reasons.push('Can serve as diagnostic block');
+                });
+            }
+
+            // Contraindications
+            const contraindications = answers.contraindications || [];
+            if (contraindications.includes('coagulopathy')) {
+                Object.keys(scores).forEach(key => {
+                    scores[key].warnings.push('Correct coagulopathy before procedure');
+                });
+            }
+            if (contraindications.includes('ascites')) {
+                scores.celiac_plexus.score -= 15;
+                scores.celiac_plexus.warnings.push('Ascites may complicate approach - consider paracentesis first');
+                scores.splanchnic.score += 5;
+                scores.splanchnic.reasons.push('Posterior approach may be preferred with ascites');
+            }
+            if (contraindications.includes('tumor_encasement')) {
+                scores.celiac_plexus.score -= 10;
+                scores.celiac_plexus.warnings.push('Tumor encasement may limit spread of injectate');
+                scores.splanchnic.score += 15;
+                scores.splanchnic.reasons.push('Preferred when celiac axis is encased');
+            }
+            if (contraindications.includes('bowel_obstruction')) {
+                Object.keys(scores).forEach(key => {
+                    scores[key].warnings.push('Caution with sympathetic blocks in obstruction - may worsen hypotension');
+                });
+            }
+
+            // Sort and return top recommendations
+            const sorted = Object.entries(scores)
+                .map(([key, data]) => ({
+                    id: key,
+                    ...nerveBlocks[key],
+                    score: data.score,
+                    reasons: [...new Set(data.reasons)],
+                    warnings: [...new Set(data.warnings)]
+                }))
+                .filter(b => b.score > 0)
+                .sort((a, b) => b.score - a.score);
+
+            // Normalize scores to percentages
+            const maxScore = sorted[0]?.score || 1;
+            sorted.forEach(b => {
+                b.matchPercent = Math.round((b.score / maxScore) * 100);
+            });
+
+            return sorted.slice(0, 5);
+        }
+
+        function showResults() {
+            document.getElementById('questionPanel').classList.add('hidden');
+            document.getElementById('summaryPanel').classList.add('hidden');
+            document.getElementById('resultsPanel').classList.remove('hidden');
+            document.getElementById('progressContainer').classList.add('hidden');
+
+            const recommendations = calculateRecommendations();
+            const resultsGrid = document.getElementById('resultsGrid');
+
+            if (recommendations.length === 0) {
+                resultsGrid.innerHTML = `
+                    <div class="result-card" style="grid-column: 1 / -1;">
+                        <p>Based on the information provided, no specific nerve block recommendations can be made. Please consult directly with the IR pain management service to discuss this case.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            resultsGrid.innerHTML = recommendations.map((block, idx) => `
+                <div class="result-card ${idx === 0 ? 'primary' : 'alternative'} fade-in" style="animation-delay: ${idx * 0.1}s">
+                    <span class="result-badge ${idx === 0 ? 'recommended' : 'alternative'}">
+                        ${idx === 0 ? '★ Primary Recommendation' : 'Alternative Option'}
+                    </span>
+                    <h3>${block.name}</h3>
+                    <div class="match-score">
+                        <div class="match-bar">
+                            <div class="match-fill" style="width: ${block.matchPercent}%"></div>
+                        </div>
+                        <span class="match-percent">${block.matchPercent}%</span>
+                    </div>
+                    
+                    <div class="result-section">
+                        <div class="result-section-title">Description</div>
+                        <p>${block.description}</p>
+                    </div>
+                    
+                    <div class="result-section">
+                        <div class="result-section-title">Why Recommended</div>
+                        <ul>
+                            ${block.reasons.map(r => `<li>${r}</li>`).join('')}
+                        </ul>
+                    </div>
+                    
+                    <div class="result-section">
+                        <div class="result-section-title">Typical Approach</div>
+                        <p>${block.approach}</p>
+                    </div>
+                    
+                    <div class="result-section">
+                        <div class="result-section-title">Clinical Considerations</div>
+                        <ul>
+                            ${block.considerations.map(c => `<li>${c}</li>`).join('')}
+                        </ul>
+                    </div>
+                    
+                    ${block.efficacy ? `
+                    <div class="result-section">
+                        <div class="result-section-title">Expected Efficacy</div>
+                        <p>${block.efficacy}</p>
+                    </div>
+                    ` : ''}
+                    
+                    <div class="result-tags">
+                        ${block.palliative ? '<span class="result-tag palliative">Palliative Appropriate</span>' : ''}
+                        ${block.warnings.map(w => `<span class="result-tag warning">⚠ ${w}</span>`).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function resetAssessment() {
+            currentQuestion = -1;
+            answers = {};
+            document.getElementById('resultsPanel').classList.add('hidden');
+            document.getElementById('introPanel').classList.remove('hidden');
+            document.getElementById('progressContainer').classList.remove('hidden');
+            updateProgress();
+            renderSummary();
+        }
+
+        // Initialize
+        init();
+    </script>
+</body>
+</html>
